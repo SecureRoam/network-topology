@@ -288,17 +288,15 @@
 	% host description
 	\node[host description, right= 12em of router-description] (raspberrypi-description) {%
 		\begin{tcolorbox}[
-			adjusted title=raspberrypi,
+			adjusted title=secureroamcompanion,
 			host description box
 		]
-		\ip{192.168.1.1}{subnet-guest}
-
-		\ip{192.168.0.1}{subnet-home}
+		\ip{192.168.25.1}{subnet-home}
 		\ip{XX.XX.XX.YY}{subnet-none}
 		\vspace{\baselineskip}
 		
 		\begin{tabular}{@{}ll@{}}
-			\faIcon{compact-disc} & Buildroot \\
+			\faIcon{compact-disc} & Raspberry Pi OS \\
 			\faIcon{memory} & 2GB \\
 			\faIcon{hdd} & 32GB \\
 		\end{tabular}
@@ -317,8 +315,10 @@
 	] (raspberrypi-services) {
 		\begin{tcboxedraster}[services raster]{services box}
 			%\tcbox[enhanced, remember as=raspberrypi-pihole]{\service{pihole}{pi-hole}{\http{pi-hole.internal.lan}}}
-			\tcbox[enhanced, remember as=raspberrypi-pihole]{\service{}{pi-hole}{\http{pi-hole.internal.lan}}}
-			\tcbox[enhanced, remember as=raspberrypi-cockpit]{\service{}{cockpit}{\http{cockpit.internal.lan}}}
+			\tcbox[enhanced, remember as=raspberrypi-pihole]{\service{}{pi-hole}{\http{dns-filter.secureroamcompanion.org}}}
+			\tcbox[enhanced, remember as=raspberrypi-cockpit]{\service{}{cockpit}{\http{secureroamcompanion.org}}}
+			\tcbox[enhanced, remember as=raspberrypi-nginx]{\service{}{nginx}{}}
+			\tcbox[enhanced, remember as=raspberrypi-iptables]{\service{}{iptables}{}}
 		\end{tcboxedraster}
 	};
 
@@ -329,7 +329,7 @@
 	\node[anchor=north] at (raspberrypi-services.north west -| raspberrypi-description.west) (raspberrypi-interfaces) {
 		\begin{tcbitemize}[interfaces raster]
 			\tcbitem[remember as=raspberrypi-wlan0] \faIcon{broadcast-tower}\hfill wlan0
-			\tcbitem[remember as=raspberrypi-eth0] \faIcon{ethernet}\hfill eth0
+			% \tcbitem[remember as=raspberrypi-eth0] \faIcon{ethernet}\hfill eth0
 			\tcbitem[remember as=raspberrypi-usb0] \faIcon{usb}\hfill usb0
 			\tcbitem[remember as=raspberrypi-usb1] \faIcon{usb}\hfill usb1
 		\end{tcbitemize}
@@ -345,10 +345,10 @@
 	% --------------- end raspberrypi ---------------
 
 	% --------------- start guest devices ---------------
-	\node[host description, below=4em of raspberrypi-host-box.south, anchor=north, inner sep=0em] (guest-devices-usb) {
+	\node[host description, below=10em of router-description, anchor=north, inner sep=0em] (guest-devices-usb) {
 		\begin{tcboxedraster}[devices raster]{%
 			devices box,
-			title={Guest Devices\hspace{1em}\ip{192.168.0.0/24}{subnet-home}},
+			title={Guest Devices\hspace{1em}\ip{192.168.25.0/24}{subnet-home}},
 			remember as=guest-devices-raster}
 			%\tcbox{\deviceImageInline{my-guest-device-image} My Guest Device}
 			\tcbox{Video Game Console}
@@ -358,19 +358,19 @@
 	};
 	% --------------- end guest devices ---------------
 
-	% --------------- start guest devices ---------------
-	\node[host description, below=10em of router-description, anchor=north, inner sep=0em] (guest-devices-ethernet) {
-		\begin{tcboxedraster}[devices raster]{%
-			devices box,
-			title={Guest Devices\hspace{1em}\ip{192.168.1.0/24}{subnet-guest}},
-			remember as=guest-devices-raster}
-			%\tcbox{\deviceImageInline{my-guest-device-image} My Guest Device}
-			\tcbox{Video Game Console}
-			\tcbox{E-Book Reader}
-			\tcbox{\textit{... more ...}}
-		\end{tcboxedraster}
-	};
-	% --------------- end guest devices ---------------
+	% % --------------- start guest devices ---------------
+	% \node[host description, below=10em of router-description, anchor=north, inner sep=0em] (guest-devices-ethernet) {
+	% 	\begin{tcboxedraster}[devices raster]{%
+	% 		devices box,
+	% 		title={Guest Devices\hspace{1em}\ip{192.168.1.0/24}{subnet-guest}},
+	% 		remember as=guest-devices-raster}
+	% 		%\tcbox{\deviceImageInline{my-guest-device-image} My Guest Device}
+	% 		\tcbox{Video Game Console}
+	% 		\tcbox{E-Book Reader}
+	% 		\tcbox{\textit{... more ...}}
+	% 	\end{tcboxedraster}
+	% };
+	% % --------------- end guest devices ---------------
 
 	% --------------- start legend ---------------
 	\matrix[
@@ -404,9 +404,9 @@
 	% \end{scope}
 
 	\begin{scope}[ethernet]
-		\draw[subnet-home] (raspberrypi-usb0.west) -- ++(-1,0) |- (guest-devices-usb.west);
-		\draw[subnet-home] (raspberrypi-usb1.west) -- ++(-1,0) |- (guest-devices-usb.west);
-		\draw[subnet-guest] (raspberrypi-eth0.west) -- ++(-1.5,0) |- (guest-devices-ethernet.east);
+		\draw[subnet-home] (raspberrypi-usb0.west) -- ++(-1,0) |- (guest-devices-usb.east);
+		\draw[subnet-home] (raspberrypi-usb1.west) -- ++(-1,0) |- (guest-devices-usb.east);
+		% \draw[subnet-guest] (raspberrypi-eth0.west) -- ++(-1.5,0) |- (guest-devices-ethernet.east);
 	\end{scope}
 
 	\begin{scope}[wifi]
